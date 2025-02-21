@@ -9,9 +9,10 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 <style>
     :root {
-        --primary-blue: #4682B4;    /* Bleu JH Bridge */
-        --secondary-blue: #1B1E27;  /* Bleu foncé */
-        --accent-green: #4CAF50;    /* Vert JH Bridge */
+        --primary-blue: #003b7a;    /* Bleu foncé (de l'image) */
+        --secondary-blue: #004fa3;  /* Bleu moyen (de l'image) */
+        --third-blue: #78b0e6;      /* Bleu clair (de l'image) */
+        --accent-green: #4c98af;    /* Vert JH Bridge */
         --light-gray: #707070;      /* Gris */
         --error-red: #FF4B4B;       /* Rouge erreur */
     }
@@ -28,7 +29,7 @@
         display: flex;
         align-items: center;
         justify-content: center;
-        background: linear-gradient(135deg, var(--secondary-blue) 0%, var(--primary-blue) 100%);
+        background: linear-gradient(135deg, var(--primary-blue) 0%, var(--secondary-blue) 60%, var(--third-blue) 100%);
         padding: 1rem;
     }
 
@@ -48,7 +49,7 @@
         position: absolute;
         width: 200%;
         height: 200%;
-        background: radial-gradient(circle, rgba(70, 130, 180, 0.1) 0%, transparent 50%);
+        background: radial-gradient(circle, rgba(120, 176, 230, 0.1) 0%, transparent 50%);
         animation: rotate 30s linear infinite;
     }
 
@@ -213,7 +214,7 @@
     }
 
     .login-button:hover {
-        background: #45a049;
+        background: #4c98af;
         transform: translateY(-2px);
     }
 
