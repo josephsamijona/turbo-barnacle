@@ -233,18 +233,25 @@ class LanguageAdmin(admin.ModelAdmin):
 
 @admin.register(models.Client)
 class ClientAdmin(admin.ModelAdmin):
-    list_display = ('get_full_name', 'company_name', 'city', 'state', 'active')
+    list_display = ('company_name', 'user', 'get_full_name', 'city', 'state', 'active')
     list_filter = ('active', 'state', 'preferred_language')
-    search_fields = ('company_name', 'user__email', 'user__first_name', 'user__last_name')
-    raw_id_fields = ('user',)
-    readonly_fields = ('credit_limit',)
+    search_fields = ('company_name', 'user__username', 'user__email', 'phone', 'email', 
+                     'user__first_name', 'user__last_name')
     fieldsets = (
-        ('Basic Information', {'fields': (('user', 'active'), 'company_name', 'preferred_language')}),
-        ('Primary Address', {'fields': ('address', ('city', 'state', 'zip_code'))}),
-        ('Billing Information', {'fields': ('billing_address', ('billing_city', 'billing_state', 'billing_zip_code'),
-                                              'tax_id', 'credit_limit'), 'classes': ('collapse',)}),
-        ('Additional Information', {'fields': ('notes',), 'classes': ('collapse',)}),
+        ('User Information', {
+            'fields': ('user', 'active')
+        }),
+        ('Company Information', {
+            'fields': ('company_name', 'address', 'city', 'state', 'zip_code', 'phone', 'email', 'tax_id')
+        }),
+        ('Billing Information', {
+            'fields': ('billing_address', 'billing_city', 'billing_state', 'billing_zip_code', 'credit_limit')
+        }),
+        ('Preferences', {
+            'fields': ('preferred_language', 'notes')
+        }),
     )
+    
     def get_full_name(self, obj):
         return f"{obj.user.first_name} {obj.user.last_name}"
     get_full_name.short_description = 'Full Name'
@@ -394,13 +401,13 @@ class AssignmentAdmin(AssignmentAdminMixin, admin.ModelAdmin):
         'is_paid'
     )
     search_fields = (
-        'client__company_name', 
+        
         'client_name', 
         'client_email',
         'interpreter__user__first_name', 
         'interpreter__user__last_name'
     )
-    raw_id_fields = ('quote', 'interpreter', 'client')
+    raw_id_fields = ('quote', 'interpreter')
     readonly_fields = (
         'created_at', 
         'updated_at', 
@@ -415,7 +422,7 @@ class AssignmentAdmin(AssignmentAdminMixin, admin.ModelAdmin):
             'fields': (
                 ('quote', 'service_type'), 
                 ('interpreter',),
-                ('client',),  # Existing client
+                
                 ('client_name', 'client_email', 'client_phone')  # New client
             ),
             'description': 'If the client is not registered in the system, you can enter their information manually using the fields below (name, email, phone). These fields are optional.'
@@ -518,10 +525,7 @@ class AssignmentAdmin(AssignmentAdminMixin, admin.ModelAdmin):
 
     def get_client_display(self, obj):
         """Display client information"""
-        if obj.client:
-            return obj.client.company_name
-        return f"{obj.client_name or 'Anonymous Client'}"
-    get_client_display.short_description = 'Client'
+        return obj.client_name or 'Anonymous Client'
 
     def get_interpreter(self, obj):
         """Display interpreter information"""
@@ -569,9 +573,7 @@ class AssignmentAdmin(AssignmentAdminMixin, admin.ModelAdmin):
     formatted_end_time_detail.short_description = "End Time (Boston)"
 
     def save_model(self, request, obj, form, change):
-        """
-        Sauvegarde du modèle avec calcul du paiement total et validation assouplie du client
-        """
+        """Sauvegarde du modèle avec calcul du paiement total"""
         if form.is_valid():
             # Calcul du paiement total
             if obj.interpreter_rate and obj.start_time and obj.end_time:
@@ -579,14 +581,8 @@ class AssignmentAdmin(AssignmentAdminMixin, admin.ModelAdmin):
                 billable_hours = max(duration, float(obj.minimum_hours))
                 obj.total_interpreter_payment = obj.interpreter_rate * Decimal(str(billable_hours))
             
-            # Si un client est sélectionné, on ignore les champs manuels
-            if obj.client:
-                obj.client_name = None
-                obj.client_email = None
-                obj.client_phone = None
-            
-            # Si pas de client sélectionné et pas de nom, utiliser "Anonymous Client"
-            if not obj.client and not obj.client_name:
+            # Si pas de nom, utiliser "Anonymous Client"
+            if not obj.client_name:
                 obj.client_name = "Anonymous Client"
 
         super().save_model(request, obj, form, change)
@@ -869,6 +865,62 @@ class ExpenseAdmin(admin.ModelAdmin):
     def transaction_id(self, obj):
         return obj.transaction.transaction_id if obj.transaction else '-'
     transaction_id.short_description = "Transaction ID"
+
+class ServiceInline(admin.TabularInline):
+    model = models.Service
+    extra = 1
+
+class ReimbursementInline(admin.TabularInline):
+    model = models.Reimbursement
+    extra = 0
+
+class DeductionInline(admin.TabularInline):
+    model = models.Deduction
+    extra = 0
+
+@admin.register(models.PayrollDocument)
+class PayrollDocumentAdmin(admin.ModelAdmin):
+    list_display = ('document_number', 'interpreter_name', 'document_date', 'created_at')
+    search_fields = ('document_number', 'interpreter_name', 'interpreter_email')
+    list_filter = ('document_date', 'created_at')
+    date_hierarchy = 'document_date'
+    inlines = [ServiceInline, ReimbursementInline, DeductionInline]
+    fieldsets = (
+        ('Company Information', {
+            'fields': ('company_logo', 'company_address', 'company_phone', 'company_email')
+        }),
+        ('Interpreter Information', {
+            'fields': ('interpreter_name', 'interpreter_address', 'interpreter_phone', 'interpreter_email')
+        }),
+        ('Document Information', {
+            'fields': ('document_number', 'document_date')
+        }),
+        ('Payment Information', {
+            'fields': ('bank_name', 'account_number', 'routing_number'),
+            'classes': ('collapse',)
+        }),
+    )
+
+@admin.register(models.Service)
+class ServiceAdmin(admin.ModelAdmin):
+    list_display = ('payroll', 'date', 'client', 'source_language', 'target_language', 'duration', 'rate', 'amount')
+    list_filter = ('date',)
+    search_fields = ('client', 'source_language', 'target_language')
+
+@admin.register(models.Reimbursement)
+class ReimbursementAdmin(admin.ModelAdmin):
+    list_display = ('payroll', 'date', 'reimbursement_type', 'description', 'amount')
+    list_filter = ('date', 'reimbursement_type')
+    search_fields = ('description',)
+
+@admin.register(models.Deduction)
+class DeductionAdmin(admin.ModelAdmin):
+    list_display = ('payroll', 'date', 'deduction_type', 'description', 'amount')
+    list_filter = ('date', 'deduction_type')
+    search_fields = ('description',)
+
+
+
 
 # =======================================================
 # 7. CONFIGURATION DU SITE ADMIN

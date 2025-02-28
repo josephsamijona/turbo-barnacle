@@ -202,7 +202,7 @@ class AssignmentAdminMixin:
         Construit le contexte pour les templates d'email.
         L'heure est déjà en fuseau Boston, pas besoin de conversion.
         """
-        client_name = assignment.client.company_name if assignment.client else assignment.client_name
+        client_name = assignment.client_name or "Anonymous Client"
         client_phone = (assignment.client.user.phone if assignment.client and assignment.client.user.phone 
                     else assignment.client_phone if assignment.client_phone 
                     else "Not provided")
@@ -297,7 +297,7 @@ class AssignmentAdminMixin:
         
         event.add('location', f"{assignment.location}, {assignment.city}, {assignment.state}")
 
-        client_name = assignment.client.company_name if assignment.client else assignment.client_name
+        client_name = assignment.client_name or "Anonymous Client"
         description = f"""
         Client: {client_name}
         Service: {assignment.service_type.name}

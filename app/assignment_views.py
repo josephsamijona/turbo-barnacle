@@ -95,7 +95,7 @@ class AssignmentResponseBaseMixin:
         'Ajouter au calendrier' ou 'Accepter / Refuser'.
         """
         interpreter = assignment.interpreter
-        client_name = assignment.client.company_name if assignment.client else assignment.client_name
+        client_name = assignment.client_name or "Anonymous Client"
         
         # Contexte pour le template HTML
         context = {
@@ -192,7 +192,7 @@ class AssignmentResponseBaseMixin:
         """
         Envoie un email de confirmation de refus à l'interprète (sans ICS).
         """
-        client_name = assignment.client.company_name if assignment.client else assignment.client_name
+        client_name = assignment.client_name or "Anonymous Client"
         
         context = {
             'interpreter_name': interpreter.user.get_full_name(),
@@ -221,7 +221,7 @@ class AssignmentResponseBaseMixin:
         Informe les administrateurs (ceux ayant role=ADMIN en BD) d'une action
         (accept/decline) sur un Assignment.
         """
-        client_name = assignment.client.company_name if assignment.client else assignment.client_name
+        client_name = assignment.client_name or "Anonymous Client"
         
         context = {
             'interpreter_name': interpreter.user.get_full_name(),
@@ -292,7 +292,7 @@ class AssignmentAcceptView(AssignmentResponseBaseMixin, TemplateView):
             )
 
             # Contexte pour la page de confirmation
-            client_name = assignment.client.company_name if assignment.client else assignment.client_name
+            client_name = assignment.client_name or "Anonymous Client"
             
             context = {
                 'title': _('Assignment Accepted'),
@@ -360,7 +360,7 @@ class AssignmentDeclineView(AssignmentResponseBaseMixin, TemplateView):
             )
 
             # Contexte pour la page de confirmation
-            client_name = assignment.client.company_name if assignment.client else assignment.client_name
+            client_name = assignment.client_name or "Anonymous Client"
             
             context = {
                 'title': _('Assignment Declined'),

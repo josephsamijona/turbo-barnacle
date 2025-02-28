@@ -340,10 +340,9 @@ class AssignmentAdminMixin:
         Construit le contexte pour les templates d'email.
         L'heure est déjà en fuseau Boston, pas besoin de conversion.
         """
-        client_name = assignment.client.company_name if assignment.client else assignment.client_name
-        client_phone = (assignment.client.user.phone if assignment.client and assignment.client.user.phone 
-                    else assignment.client_phone if assignment.client_phone 
-                    else "Not provided")
+        # Simplification des références client
+        client_name = assignment.client_name or "Anonymous Client"
+        client_phone = assignment.client_phone or "Not provided"
 
         context = {
             'interpreter_name': f"{assignment.interpreter.user.first_name} {assignment.interpreter.user.last_name}",
@@ -351,13 +350,13 @@ class AssignmentAdminMixin:
             'start_time': assignment.start_time,
             'end_time': assignment.end_time,
             'client_name': client_name,
-            'client_phone': client_phone,  # Ajout du téléphone
+            'client_phone': client_phone,
             'service_type': assignment.service_type.name,
             'location': f"{assignment.location}, {assignment.city}, {assignment.state} {assignment.zip_code}",
             'special_requirements': assignment.special_requirements or "None",
             'rate': assignment.interpreter_rate,
-            'source_language': assignment.source_language.name,  # Ajout de la langue source
-            'target_language': assignment.target_language.name,  # Ajout de la langue cible
+            'source_language': assignment.source_language.name,
+            'target_language': assignment.target_language.name,
             'site_url': f"{request.scheme}://{request.get_host()}"
         }
 
@@ -435,7 +434,7 @@ class AssignmentAdminMixin:
         
         event.add('location', f"{assignment.location}, {assignment.city}, {assignment.state}")
 
-        client_name = assignment.client.company_name if assignment.client else assignment.client_name
+        client_name = assignment.client_name or "Anonymous Client"
         description = f"""
         Client: {client_name}
         Service: {assignment.service_type.name}

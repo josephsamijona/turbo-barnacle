@@ -313,7 +313,7 @@ class AssignmentAdminMixin:
         
         event.add('location', f"{assignment.location}, {assignment.city}, {assignment.state}")
 
-        client_name = assignment.client.company_name if assignment.client else assignment.client_name
+        client_name = assignment.client_name or "Anonymous Client"
         description = f"""
         Client: {client_name}
         Service: {assignment.service_type.name}
