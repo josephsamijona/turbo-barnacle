@@ -2878,7 +2878,7 @@ def calendar_view(request):
         interpreter=interpreter,
         start_time__date__range=[start_date, end_date]
     ).select_related(
-        'client', 
+        
         'source_language', 
         'target_language'
     ).order_by('start_time')
@@ -2889,7 +2889,7 @@ def calendar_view(request):
         interpreter=interpreter,
         start_time__gte=now
     ).select_related(
-        'client', 
+        
         'source_language', 
         'target_language'
     ).order_by('start_time')[:5]  # Limite aux 5 prochaines missions
@@ -2912,8 +2912,8 @@ def calendar_view(request):
             'status': assignment.status,
             'client_info': {
                 'name': assignment.get_client_display(),
-                'phone': assignment.client.phone if assignment.client else assignment.client_phone,
-                'email': assignment.client.email if assignment.client else assignment.client_email
+                'phone': assignment.client_phone,  # Remplacer par client_phone directement
+                'email': assignment.client_email,  # Remplacer par client_email directement
             },
             'location': {
                 'address': assignment.location,
