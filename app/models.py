@@ -217,8 +217,7 @@ class Assignment(models.Model):
         blank=True
     )
     
-    # Modification du champ client pour permettre les deux options
-      
+    # Client fields - all optional
     client_name = models.CharField(max_length=255, null=True, blank=True)  
     client_email = models.EmailField(null=True, blank=True)  
     client_phone = models.CharField(max_length=20, null=True, blank=True)  
@@ -258,26 +257,17 @@ class Assignment(models.Model):
         ]
 
     def __str__(self):
-        client_info = self.client_name or "Nouveau client"
+        client_info = self.client_name or "Unspecified Client"
         return f"Assignment {self.id} - {client_info} ({self.status})"
 
-    def get_client_display(self):
-        """Retourne les informations du client à afficher"""
-        return self.client_name or "Anonymous Client"
-
-    def clean(self):
-        """Validation personnalisée simplifiée"""
-        # Supprimez les vérifications qui font référence à self.client
-        if not self.client_name and not self.client_email:
-            raise ValidationError({
-                'client_name': 'Vous devez fournir au minimum un nom ou un email pour le client'
-            })
+    # Remove the clean method entirely or replace with one that has no client validations
+    # def clean(self):
+    #    """Validation personnalisée simplifiée"""
+    #    # Suppression complète des validations client
+    #    pass
 
     def save(self, *args, **kwargs):
-        # Désactivez temporairement la validation pour bypasser l'erreur de NULL
-        skip_validation = kwargs.pop('skip_validation', False)
-        if not skip_validation:
-            self.clean()
+        # No validation required for client fields
         super().save(*args, **kwargs)
 
     def can_be_confirmed(self):
@@ -333,10 +323,7 @@ class Assignment(models.Model):
 
     def get_client_display(self):
         """Retourne les informations du client à afficher"""
-        if self.client:
-            return str(self.client)
-        return self.client_name
-
+        return self.client_name or "Unspecified Client"
 class AssignmentFeedback(models.Model):
     assignment = models.OneToOneField(Assignment, on_delete=models.CASCADE)
     rating = models.IntegerField(validators=[MinValueValidator(1), MaxValueValidator(5)])

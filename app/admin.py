@@ -401,7 +401,6 @@ class AssignmentAdmin(AssignmentAdminMixin, admin.ModelAdmin):
         'is_paid'
     )
     search_fields = (
-        
         'client_name', 
         'client_email',
         'interpreter__user__first_name', 
@@ -422,10 +421,9 @@ class AssignmentAdmin(AssignmentAdminMixin, admin.ModelAdmin):
             'fields': (
                 ('quote', 'service_type'), 
                 ('interpreter',),
-                
-                ('client_name', 'client_email', 'client_phone')  # New client
+                ('client_name', 'client_email', 'client_phone')
             ),
-            'description': 'If the client is not registered in the system, you can enter their information manually using the fields below (name, email, phone). These fields are optional.'
+            'description': 'All client information fields (name, email, phone) are optional. You can leave them all empty if no client information is available yet.'
         }),
         ('Language Details', {
             'fields': ('source_language', 'target_language')
@@ -525,7 +523,7 @@ class AssignmentAdmin(AssignmentAdminMixin, admin.ModelAdmin):
 
     def get_client_display(self, obj):
         """Display client information"""
-        return obj.client_name or 'Anonymous Client'
+        return obj.client_name or 'Unspecified Client'
 
     def get_interpreter(self, obj):
         """Display interpreter information"""
@@ -573,17 +571,16 @@ class AssignmentAdmin(AssignmentAdminMixin, admin.ModelAdmin):
     formatted_end_time_detail.short_description = "End Time (Boston)"
 
     def save_model(self, request, obj, form, change):
-        """Sauvegarde du modèle avec calcul du paiement total"""
+        """Save model with total payment calculation"""
         if form.is_valid():
-            # Calcul du paiement total
+            # Calculate total payment
             if obj.interpreter_rate and obj.start_time and obj.end_time:
                 duration = (obj.end_time - obj.start_time).total_seconds() / 3600
                 billable_hours = max(duration, float(obj.minimum_hours))
                 obj.total_interpreter_payment = obj.interpreter_rate * Decimal(str(billable_hours))
             
-            # Si pas de nom, utiliser "Anonymous Client"
-            if not obj.client_name:
-                obj.client_name = "Anonymous Client"
+            # Remove the line that forced "Anonymous Client" as default
+            # Let the name field remain empty if not provided
 
         super().save_model(request, obj, form, change)
 @admin.register(models.Payment)
