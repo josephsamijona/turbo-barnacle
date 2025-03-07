@@ -9,11 +9,11 @@
 /* Configuration des variables CSS */
 :root {
     /* Couleurs principales */
-    --primary-dark: #1B1F2B;
-    --primary-green: #4CAF50;
-    --primary-teal: #008080;
-    --gradient-start: #1B1F2B;
-    --gradient-end: #006666;
+    --primary-dark: #0A1E40;     /* Remplacé par le bleu marine foncé du fond */
+    --primary-green: #0D6EFD;    /* Remplacé par le bleu vif des boutons principaux */
+    --primary-teal: #4D96FF;     /* Remplacé par le bleu clair du texte "We are your voice!" */
+    --gradient-start: #0A1E40;   /* Début du gradient avec le bleu marine foncé */
+    --gradient-end: #0D6EFD;     /* Fin du gradient avec le bleu vif */
 
     /* Couleurs fonctionnelles */
     --success: #4CAF50;
