@@ -13,7 +13,6 @@ from django.utils.html import strip_tags
 from datetime import datetime, timedelta
 import pytz
 import icalendar
-import uuid
 
 # Pour manipuler la pièce jointe ICS
 import smtplib
@@ -98,9 +97,6 @@ class AssignmentResponseBaseMixin:
         interpreter = assignment.interpreter
         client_name = assignment.client_name or "Anonymous Client"
         
-        # Identifiant unique pour éviter le regroupement
-        unique_id = uuid.uuid4().hex[:8]
-        
         # Contexte pour le template HTML
         context = {
             'interpreter_name': interpreter.user.get_full_name(),
@@ -113,8 +109,7 @@ class AssignmentResponseBaseMixin:
             'service_type': assignment.service_type.name,
             'languages': f"{assignment.source_language.name} → {assignment.target_language.name}",
             'rate': assignment.interpreter_rate,
-            'special_requirements': assignment.special_requirements or 'None',
-            'reference_id': unique_id
+            'special_requirements': assignment.special_requirements or 'None'
         }
         
         # Rendu HTML
@@ -128,8 +123,7 @@ class AssignmentResponseBaseMixin:
         cal.add('METHOD', 'REQUEST')  # Indique qu'il s'agit d'une invitation
 
         event = Event()
-        # Ajouter l'identifiant unique dans le résumé
-        event.add('SUMMARY', f"Interpretation Assignment - {assignment.service_type.name} (Ref:{unique_id})")
+        event.add('SUMMARY', f"Interpretation Assignment - {assignment.service_type.name}")
         
         start_time = assignment.start_time.astimezone(BOSTON_TZ)
         end_time = assignment.end_time.astimezone(BOSTON_TZ)
@@ -146,13 +140,12 @@ class AssignmentResponseBaseMixin:
             f"Languages: {assignment.source_language.name} → {assignment.target_language.name}\n"
             f"Location: {assignment.location}, {assignment.city}, {assignment.state} {assignment.zip_code}\n\n"
             f"Special Requirements: {assignment.special_requirements or 'None'}\n\n"
-            f"Rate: ${assignment.interpreter_rate}/hour\n\n"
-            f"Reference: {unique_id}\n"
+            f"Rate: ${assignment.interpreter_rate}/hour\n"
         )
         event.add('DESCRIPTION', description)
         
-        # UID unique avec l'identifiant spécifique à cet email
-        event.add('UID', f"assignment-{assignment.id}-{unique_id}@dbdint.com")
+        # UID unique
+        event.add('UID', f"assignment-{assignment.id}@dbdint.com")
 
         # ORGANIZER (expéditeur)
         organizer_email = settings.DEFAULT_FROM_EMAIL
@@ -169,20 +162,9 @@ class AssignmentResponseBaseMixin:
         cal.add_component(event)
         ics_data = cal.to_ical()
 
-        # Sujet avec ID unique pour éviter le regroupement
-        subject = f'Assignment Confirmation #{assignment.id} - Calendar Invitation [{unique_id}]'
-        
-        # Message-ID unique pour cet email
+        # Sujet + Message-ID pour éviter le regroupement en fil
+        subject = f'Assignment Confirmation #{assignment.id} - Calendar Invitation'
         unique_message_id = make_msgid(domain="dbdint.co")
-
-        # En-têtes supplémentaires pour éviter le regroupement
-        headers = {
-            'Message-ID': unique_message_id,
-            'X-Entity-Ref-ID': f"{unique_id}@dbdint.co",
-            'X-No-Threading': 'true',
-            'Thread-Topic': f"DBD Assignment {unique_id}",
-            'Thread-Index': unique_id
-        }
 
         # Construction de l'email multi-part
         email = EmailMultiAlternatives(
@@ -190,16 +172,16 @@ class AssignmentResponseBaseMixin:
             body=text_message,
             from_email=organizer_email,
             to=[interpreter.user.email],
-            headers=headers,
+            headers={'Message-ID': unique_message_id},
         )
         # Partie HTML
         email.attach_alternative(html_message, "text/html")
 
-        # Pièce jointe ICS avec nom unique
-        ical_part = MIMEBase('text', 'calendar', method='REQUEST', name=f'invite-{unique_id}.ics')
+        # Pièce jointe ICS
+        ical_part = MIMEBase('text', 'calendar', method='REQUEST', name='invite.ics')
         ical_part.set_payload(ics_data)
         encoders.encode_base64(ical_part)
-        ical_part.add_header('Content-Disposition', f'attachment; filename="invite-{unique_id}.ics"')
+        ical_part.add_header('Content-Disposition', 'attachment; filename="invite.ics"')
         ical_part.add_header('Content-class', 'urn:content-classes:calendarmessage')
         email.attach(ical_part)
 
@@ -212,51 +194,27 @@ class AssignmentResponseBaseMixin:
         """
         client_name = assignment.client_name or "Anonymous Client"
         
-        # Identifiant unique pour éviter le regroupement
-        unique_id = uuid.uuid4().hex[:8]
-        
         context = {
             'interpreter_name': interpreter.user.get_full_name(),
             'assignment': assignment,
             'client_name': client_name,
-            'client_phone': assignment.client_phone,
+            'client_phone':assignment.client_phone,
             'start_time': assignment.start_time.astimezone(BOSTON_TZ),
-            'reference_id': unique_id
         }
         
         html_message = render_to_string(
             'notifmail/interprter_assignment_decline_confirmation.html',
             context
         )
-        text_message = strip_tags(html_message)
         
-        # Sujet avec ID unique
-        subject = f'Assignment Declined - Confirmation [{unique_id}]'
-        
-        # Message-ID unique pour cet email
-        unique_message_id = make_msgid(domain="dbdint.co")
-        
-        # En-têtes pour éviter le regroupement
-        headers = {
-            'Message-ID': unique_message_id,
-            'X-Entity-Ref-ID': f"{unique_id}@dbdint.co",
-            'X-No-Threading': 'true',
-            'Thread-Topic': f"DBD Assignment Decline {unique_id}",
-            'Thread-Index': unique_id
-        }
-        
-        # Construction de l'email
-        email = EmailMultiAlternatives(
-            subject=subject,
-            body=text_message,
+        send_mail(
+            subject=_('Assignment Declined - Confirmation'),
+            message=strip_tags(html_message),
             from_email=settings.DEFAULT_FROM_EMAIL,
-            to=[interpreter.user.email],
-            headers=headers,
+            recipient_list=[interpreter.user.email],
+            html_message=html_message,
+            fail_silently=False
         )
-        email.attach_alternative(html_message, "text/html")
-        
-        # Envoi
-        email.send(fail_silently=False)
 
     def notify_admin(self, assignment, action, interpreter):
         """
@@ -265,21 +223,16 @@ class AssignmentResponseBaseMixin:
         """
         client_name = assignment.client_name or "Anonymous Client"
         
-        # Identifiant unique pour éviter le regroupement
-        unique_id = uuid.uuid4().hex[:8]
-        
         context = {
             'interpreter_name': interpreter.user.get_full_name(),
             'assignment': assignment,
             'client_name': client_name,
             'action': action,
-            'admin_url': reverse('admin:app_assignment_change', args=[assignment.id]),
-            'reference_id': unique_id
+            'admin_url': reverse('admin:app_assignment_change', args=[assignment.id])
         }
         
         template = 'notifmail/admin_assignment_response.html'
         html_message = render_to_string(template, context)
-        text_message = strip_tags(html_message)
         
         # Récupère tous les utilisateurs avec role=ADMIN
         admin_users = User.objects.filter(role=User.Roles.ADMIN, is_active=True)
@@ -287,34 +240,15 @@ class AssignmentResponseBaseMixin:
 
         if not admin_emails:
             return  # Aucun admin, on quitte silencieusement ou on log
-        
-        # Sujet avec ID unique
-        subject = f'Assignment {action} by {interpreter.user.get_full_name()} [{unique_id}]'
-        
-        # Message-ID unique pour cet email
-        unique_message_id = make_msgid(domain="dbdint.co")
-        
-        # En-têtes pour éviter le regroupement
-        headers = {
-            'Message-ID': unique_message_id,
-            'X-Entity-Ref-ID': f"{unique_id}@dbdint.co",
-            'X-No-Threading': 'true',
-            'Thread-Topic': f"DBD Admin Notification {unique_id}",
-            'Thread-Index': unique_id
-        }
-        
-        # Construction de l'email
-        email = EmailMultiAlternatives(
-            subject=subject,
-            body=text_message,
+
+        send_mail(
+            subject=f'Assignment {action} by {interpreter.user.get_full_name()}',
+            message=strip_tags(html_message),
             from_email=settings.DEFAULT_FROM_EMAIL,
-            to=admin_emails,
-            headers=headers,
+            recipient_list=admin_emails,
+            html_message=html_message,
+            fail_silently=False
         )
-        email.attach_alternative(html_message, "text/html")
-        
-        # Envoi
-        email.send(fail_silently=False)
 
 
 class AssignmentAcceptView(AssignmentResponseBaseMixin, TemplateView):

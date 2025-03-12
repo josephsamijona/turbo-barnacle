@@ -273,8 +273,8 @@ class AssignmentAdminMixin:
         Envoie un email lié à l'Assignment.
         
         - Utilise un seul email multi-part (HTML + ICS si nécessaire).
-        - Génère un Message-ID unique pour chaque email.
-        - Ajoute des en-têtes pour forcer les emails à ne pas être regroupés.
+        - Génère un Message-ID unique et supprime complètement les en-têtes
+          In-Reply-To / References pour casser le fil.
         - Convertit les dates en America/New_York pour cohérence.
         """
         if not assignment.interpreter or not assignment.interpreter.user.email:
@@ -290,23 +290,17 @@ class AssignmentAdminMixin:
             plain_message = strip_tags(html_message)
 
             # 3) Construction de l'email multi-part
-            # Ajout d'un identifiant unique au sujet pour éviter le regroupement
-            unique_id = uuid.uuid4().hex[:8]
-            subject = f"{template_config['subject']} [{unique_id}]"
-            
+            subject = template_config['subject']
             from_email = settings.DEFAULT_FROM_EMAIL
             to_email = [assignment.interpreter.user.email]
 
-            # Génération d'un message-id complètement unique
+            # Génération d'un message-id unique
             unique_msg_id = make_msgid(domain="dbdint.co")
-            
-            # En-têtes pour forcer la non-continuité
+
+            # Supprimer toute référence aux en-têtes de conversation
             headers = {
                 'Message-ID': unique_msg_id,
-                'X-Entity-Ref-ID': f"{unique_id}@dbdint.co",
-                'X-No-Threading': 'true',
-                'Thread-Topic': f"DBD Assignment {unique_id}",
-                'Thread-Index': unique_id
+                # On ne met pas 'In-Reply-To' ni 'References' afin d'éviter tout regroupement
             }
 
             email = EmailMultiAlternatives(
@@ -320,14 +314,13 @@ class AssignmentAdminMixin:
 
             # 4) Si on doit inclure une invitation ICS (confirmed, etc.)
             if template_config.get('include_calendar', False):
-                # Utiliser un identifiant unique pour chaque invitation calendrier
-                ics_data = self.generate_ics_calendar(assignment, unique_id)
+                ics_data = self.generate_ics_calendar(assignment)
                 
                 # On attache l'ICS dans le même email
-                ical_part = MIMEBase('text', 'calendar', method='REQUEST', name=f'invite-{unique_id}.ics')
+                ical_part = MIMEBase('text', 'calendar', method='REQUEST', name='invite.ics')
                 ical_part.set_payload(ics_data)
                 encoders.encode_base64(ical_part)
-                ical_part.add_header('Content-Disposition', f'attachment; filename="assignment-{unique_id}.ics"')
+                ical_part.add_header('Content-Disposition', 'attachment; filename="assignment.ics"')
                 ical_part.add_header('Content-class', 'urn:content-classes:calendarmessage')
                 email.attach(ical_part)
 
@@ -420,11 +413,10 @@ class AssignmentAdminMixin:
             'include_calendar': False
         })
 
-    def generate_ics_calendar(self, assignment, unique_id=None):
+    def generate_ics_calendar(self, assignment):
         """
         Génère et retourne les données ICS.
         L'heure est déjà en fuseau Boston.
-        Utilise un identifiant unique pour éviter le regroupement.
         """
         cal = icalendar.Calendar()
         cal.add('prodid', '-//DBD I&T Assignment System//EN')
@@ -432,9 +424,7 @@ class AssignmentAdminMixin:
         cal.add('method', 'REQUEST')
         
         event = icalendar.Event()
-        # Ajout de l'identifiant unique dans le résumé pour différencier les événements
-        unique_suffix = f" (Ref:{unique_id})" if unique_id else ""
-        event.add('summary', f"Interpretation Assignment - {assignment.service_type.name}{unique_suffix}")
+        event.add('summary', f"Interpretation Assignment - {assignment.service_type.name}")
         
         # Les heures sont déjà dans le bon fuseau horaire
         event.add('dtstart', assignment.start_time)
@@ -455,14 +445,11 @@ class AssignmentAdminMixin:
         Special Requirements: {assignment.special_requirements or 'None'}
         
         Rate: ${assignment.interpreter_rate}/hour
-        
-        Reference: {unique_id or uuid.uuid4().hex[:8]}
         """
         event.add('description', description)
         
-        # Identifiant unique pour chaque événement
-        event_uid = unique_id or uuid.uuid4().hex
-        event.add('uid', f"assignment-{assignment.id}-{event_uid}@dbdint.co")
+        # Identifiant unique
+        event.add('uid', f"assignment-{assignment.id}@dbdint.co")
         
         # ORGANIZER
         organizer_email = settings.DEFAULT_FROM_EMAIL
