@@ -11,7 +11,7 @@
             color: #E5E7EB;
             margin: 0;
             padding: 20px;
-            background: linear-gradient(135deg, #1f2937 0%, #164e63 100%);
+            background: linear-gradient(135deg, #0a3160 0%, #164e63 100%);
         }
         .container {
             max-width: 600px;
@@ -22,7 +22,7 @@
             overflow: hidden;
         }
         .header {
-            background-color: {% if action == 'accepted' %}#4CAF50{% else %}#ef4444{% endif %};
+            background-color: {% if action == 'accepted' %}#0066ff{% else %}#ef4444{% endif %};
             padding: 20px;
             text-align: center;
         }
@@ -41,7 +41,7 @@
             border-radius: 8px;
             padding: 20px;
             margin: 20px 0;
-            border-left: 4px solid {% if action == 'accepted' %}#4CAF50{% else %}#ef4444{% endif %};
+            border-left: 4px solid {% if action == 'accepted' %}#0066ff{% else %}#ef4444{% endif %};
             box-shadow: 0 2px 4px rgba(0,0,0,0.2);
         }
         .detail-row {
@@ -55,12 +55,12 @@
             border-bottom: none;
         }
         .detail-row strong {
-            color: #6EE7B7;
+            color: #4a9eff;
             font-weight: bold;
         }
         .notice-box {
-            background-color: {% if action == 'accepted' %}rgba(76, 175, 80, 0.1){% else %}rgba(239, 68, 68, 0.1){% endif %};
-            border: 1px solid {% if action == 'accepted' %}#4CAF50{% else %}#ef4444{% endif %};
+            background-color: {% if action == 'accepted' %}rgba(0, 102, 255, 0.1){% else %}rgba(239, 68, 68, 0.1){% endif %};
+            border: 1px solid {% if action == 'accepted' %}#0066ff{% else %}#ef4444{% endif %};
             color: #F3F4F6;
             padding: 15px;
             border-radius: 8px;
@@ -76,7 +76,7 @@
         }
         .next-steps h3 {
             margin-top: 0;
-            color: #6EE7B7;
+            color: #4a9eff;
         }
         .next-steps ul {
             color: #F3F4F6;
@@ -88,7 +88,7 @@
         }
         .action-button {
             display: inline-block;
-            background-color: {% if action == 'accepted' %}#4CAF50{% else %}#ef4444{% endif %};
+            background-color: {% if action == 'accepted' %}#0066ff{% else %}#ef4444{% endif %};
             color: white !important;
             padding: 14px 32px;
             text-decoration: none;
@@ -103,7 +103,7 @@
         }
         .action-button:hover {
             transform: translateY(-1px);
-            box-shadow: 0 4px 8px {% if action == 'accepted' %}rgba(76, 175, 80, 0.2){% else %}rgba(239, 68, 68, 0.2){% endif %};
+            box-shadow: 0 4px 8px {% if action == 'accepted' %}rgba(0, 102, 255, 0.2){% else %}rgba(239, 68, 68, 0.2){% endif %};
         }
         .footer {
             background-color: #1e293b;
@@ -133,7 +133,7 @@
 <body>
     <div class="container">
         <div class="header">
-            <img src="{% static 'img/one.png' %}" alt="JH Bridge Logo" class="logo">
+            <img src="{% static 'img/one.png' %}" alt="DBD I&T" class="logo">
 
             <h2 style="color: #fff;">Assignment {{ action|title }} by Interpreter</h2>
         </div>
