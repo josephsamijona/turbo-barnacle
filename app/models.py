@@ -1,3 +1,4 @@
+import decimal
 import uuid
 from django.db import models
 from django.utils import timezone
@@ -690,9 +691,9 @@ class InterpreterPayment(models.Model):
         verbose_name = 'Interpreter Payment'
         verbose_name_plural = 'Interpreter Payments'
         indexes = [
-            models.Index(fields=['status', 'scheduled_date']),
-            models.Index(fields=['interpreter', 'status']),
-            models.Index(fields=['created_at']),
+            models.Index(fields=['status', 'scheduled_date'], name='ip_status_scheduled_idx'),
+            models.Index(fields=['interpreter', 'status'], name='ip_interpreter_status_idx'),
+            models.Index(fields=['created_at'], name='ip_created_at_idx'),
         ]
 
     def __str__(self):
@@ -742,6 +743,7 @@ class InterpreterPayment(models.Model):
             self.save()
             return True
         return False
+    
 class Expense(models.Model):
     """Gestion des dépenses de l'entreprise"""
     class ExpenseType(models.TextChoices):

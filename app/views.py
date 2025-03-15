@@ -2599,6 +2599,8 @@ def get_earnings_data(request, year=None):
 
 
 ####################################################newupdate####################3
+
+
 @login_required
 def dashboard_view(request):
     """
@@ -2606,23 +2608,44 @@ def dashboard_view(request):
     Vérifie que l'utilisateur possède un profil d'interprète,
     calcule les statistiques et prépare les données des missions.
     """
+    # Identifier l'utilisateur dans les logs
+    user_id = request.user.id
+    username = request.user.username
+    logger.info(f"Accès au dashboard: User ID={user_id}, Username={username}")
+    
+    # Vérifier si l'utilisateur a un profil d'interprète
     if not hasattr(request.user, 'interpreter_profile'):
+        logger.warning(f"Accès refusé: User ID={user_id} n'a pas de profil d'interprète")
         return render(request, 'error.html', {
-            'message': 'Access denied. Interpreter profile required.'
+            'message': 'Access denied. Interpreter profile required.',
+            'error_type': 'profile_missing',
+            'user_id': user_id
         })
 
     interpreter = request.user.interpreter_profile
+    logger.info(f"Profil d'interprète trouvé: ID={interpreter.id}")
 
     try:
+        # Log du début de chaque étape principale
+        logger.info(f"Début du calcul des statistiques pour interpreter_id={interpreter.id}")
         # Calcul des statistiques
         stats = get_interpreter_stats(interpreter)
+        logger.info(f"Statistiques calculées avec succès pour interpreter_id={interpreter.id}")
 
-        # Récupération des missions en attente et confirmées
+        # Récupération des missions
+        logger.info(f"Récupération des missions en attente pour interpreter_id={interpreter.id}")
         pending_assignments = get_pending_assignments(interpreter)
+        logger.info(f"Nombre de missions en attente: {len(pending_assignments)}")
+        
+        logger.info(f"Récupération des missions confirmées pour interpreter_id={interpreter.id}")
         confirmed_assignments = get_confirmed_assignments(interpreter)
+        logger.info(f"Nombre de missions confirmées: {len(confirmed_assignments)}")
 
-        # Préparation des données pour l'affichage
+        # Préparation des données
+        logger.info("Préparation des données des missions en attente")
         pending_data = prepare_assignments_data(request, pending_assignments, 'PENDING')
+        
+        logger.info("Préparation des données des missions confirmées")
         confirmed_data = prepare_assignments_data(request, confirmed_assignments, 'CONFIRMED')
 
         context = {
@@ -2631,11 +2654,26 @@ def dashboard_view(request):
             'confirmed_assignments': confirmed_data
         }
 
+        logger.info(f"Rendu du template interpreter/int_main.html pour interpreter_id={interpreter.id}")
         return render(request, 'interpreter/int_main.html', context)
 
     except Exception as e:
+        # Capture détaillée des exceptions avec traçage
+        import traceback
+        error_trace = traceback.format_exc()
+        logger.error(f"Erreur dans dashboard_view pour interpreter_id={interpreter.id}: {str(e)}")
+        logger.error(f"Trace complète de l'erreur: {error_trace}")
+        
+        # Déterminer le type d'erreur pour un meilleur diagnostic
+        error_type = e.__class__.__name__
+        
+        # Retourner des informations d'erreur plus détaillées
         return render(request, 'error.html', {
-            'message': f'An error occurred: {str(e)}'
+            'message': f'An error occurred: {str(e)}',
+            'error_type': error_type,
+            'interpreter_id': getattr(interpreter, 'id', 'unknown'),
+            'function_name': 'dashboard_view',
+            'error_trace': error_trace if settings.DEBUG else None  # Seulement en mode DEBUG
         })
 
 
@@ -2737,7 +2775,7 @@ def prepare_assignments_data(request, assignments, status_type):
             # Informations principales
             'main_info': {
                 'id': assignment.id,
-                'client_name': assignment.client.company_name if assignment.client else assignment.client_name,
+                'client_name': assignment.client_name,
                 'address': f"{assignment.location}, {assignment.city}",
                 'languages': f"{assignment.source_language.name} → {assignment.target_language.name}",
                 'status': status_type,
