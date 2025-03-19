@@ -11,7 +11,7 @@ logging.basicConfig(
 logger = logging.getLogger(__name__)
 
 # URL de connexion Railway
-db_url = "mysql://root:ehbimLvUPsxiSseUYAQNMgjiJyPgKSXW@yamanote.proxy.rlwy.net:38275/railway"
+
 
 try:
     # Extraire les composants de l'URL
