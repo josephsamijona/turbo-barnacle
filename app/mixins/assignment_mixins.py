@@ -439,8 +439,8 @@ class AssignmentAdminMixin:
         # Les heures sont déjà dans le bon fuseau horaire
         event.add('dtstart', assignment.start_time)
         event.add('dtend', assignment.end_time)
-        event.add('dtstamp', timezone.now())
-        event.add('created', timezone.now())
+        event.add('dtstamp',timezone.now().astimezone(pytz.UTC))
+        event.add('created', timezone.now().astimezone(pytz.UTC))
         
         event.add('location', f"{assignment.location}, {assignment.city}, {assignment.state}")
 
