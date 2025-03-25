@@ -1,13 +1,13 @@
 /* register.css */
 :root {
-    --primary-green: #4CAF50;
-    --dark-blue: #1E3D5C;
-    --darker-blue: #1B1E2F;
-    --light-text: #F5F5F5;
-    --input-bg: #2A2D3E;
-    --error-red: #ff4444;
-    --success-green: #00C851;
-    --warning-orange: #FFA500;
+    --primary-green: #4cd964;      /* Modifié pour le vert vif CGSD */
+    --dark-blue: #000000;          /* Remplacé par noir */
+    --darker-blue: #1a1a1a;        /* Remplacé par noir plus clair */
+    --light-text: #F5F5F5;         /* Inchangé */
+    --input-bg: #2A2D3E;           /* Inchangé */
+    --error-red: #ff4444;          /* Inchangé */
+    --success-green: #4cd964;      /* Modifié pour matcher le vert CGSD */
+    --warning-orange: #FFA500;     /* Inchangé */
 }
 
 * {
@@ -18,7 +18,7 @@
 
 body {
     min-height: 100vh;
-    background: linear-gradient(160deg, var(--dark-blue) 0%, #2C5282 100%);
+    background: linear-gradient(160deg, var(--dark-blue) 0%, #2a2a2a 100%);
     font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
     color: var(--light-text);
     display: flex;
@@ -71,7 +71,7 @@ body {
 
 .step-container.active .step-number {
     background: var(--primary-green);
-    box-shadow: 0 0 20px rgba(76, 175, 80, 0.4);
+    box-shadow: 0 0 20px rgba(76, 217, 100, 0.4);
 }
 
 .step-label {
@@ -134,7 +134,7 @@ body {
 .form-control:focus {
     outline: none;
     border-color: var(--primary-green);
-    box-shadow: 0 0 0 4px rgba(76, 175, 80, 0.1);
+    box-shadow: 0 0 0 4px rgba(76, 217, 100, 0.1);
 }
 
 .input-icon {
@@ -213,9 +213,9 @@ body {
 }
 
 .btn-submit:hover {
-    background: #45a049;
+    background: #5fe077;  /* Version légèrement plus claire du vert */
     transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(76, 175, 80, 0.3);
+    box-shadow: 0 4px 12px rgba(76, 217, 100, 0.3);
 }
 
 .sign-in-link {
@@ -232,7 +232,7 @@ body {
 }
 
 .sign-in-link a:hover {
-    color: #45a049;
+    color: #5fe077;  /* Version légèrement plus claire du vert */
     text-decoration: underline;
 }
 
