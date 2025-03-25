@@ -1460,7 +1460,7 @@ class InterpreterRegistrationStep1View(FormView):
        
        if request.user.is_authenticated:
            logger.info(f"Authenticated user {request.user.email} attempting to access registration. Redirecting to dashboard.")
-           return redirect('interpreter_dashboard')
+           return redirect('dbdint:interpreter_dashboard')
        return super().dispatch(request, *args, **kwargs)
 
    def form_valid(self, form):
