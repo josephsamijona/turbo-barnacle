@@ -1,0 +1,151 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Assignment Declined - DBD I&T </title>
+    <style>
+        :root {
+            --primary-dark: #0F172A;
+            --secondary-dark: #1E293B;
+            --accent-blue: #3B82F6;
+            --text-light: #E2E8F0;
+            --text-muted: #CBD5E1;
+            --background-dark: #0A101E;
+            --success-blue: #2563EB;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', 'Segoe UI', Roboto, sans-serif;
+            line-height: 1.7;
+            background-color: var(--background-dark);
+            color: var(--text-light);
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+
+        .container {
+            max-width: 600px;
+            margin: 40px auto;
+            background-color: var(--secondary-dark);
+            padding: 35px;
+            border-radius: 12px;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.1);
+            border: 1px solid rgba(59, 130, 246, 0.2);
+            text-align: center;
+        }
+
+        .logo {
+            display: block;
+            max-width: 180px;
+            margin: 0 auto 30px;
+        }
+
+        .header {
+            margin-bottom: 30px;
+        }
+
+        .header h1 {
+            color: var(--accent-blue);
+            font-size: 2em;
+            letter-spacing: 0.5px;
+        }
+
+        .message {
+            background-color: rgba(30, 41, 59, 0.6);
+            padding: 25px;
+            border-radius: 8px;
+            border-left: 4px solid var(--success-blue);
+            margin-bottom: 25px;
+        }
+
+        .message p {
+            color: var(--text-light);
+            margin-bottom: 15px;
+        }
+
+        .login-button {
+            display: block;
+            width: 100%;
+            text-align: center;
+            background-color: var(--accent-blue);
+            color: var(--primary-dark);
+            padding: 15px;
+            text-decoration: none;
+            border-radius: 8px;
+            font-weight: bold;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+        }
+
+        .login-button:hover {
+            background-color: #2563EB;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(59, 130, 246, 0.3);
+        }
+
+        .contact-info {
+            background-color: rgba(59, 130, 246, 0.1);
+            padding: 20px;
+            border-radius: 8px;
+            border: 1px solid var(--accent-blue);
+            margin-top: 25px;
+            text-align: center;
+        }
+
+        .contact-heading {
+            color: var(--accent-blue);
+            font-weight: bold;
+            margin-bottom: 15px;
+            font-size: 1.1em;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .phone-number {
+            color: var(--accent-blue);
+            font-size: 1.3em;
+            font-weight: bold;
+            margin: 15px 0;
+            display: block;
+        }
+
+        @media (max-width: 640px) {
+            .container {
+                margin: 20px;
+                padding: 25px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <img src="https://dbdiandt.co/assets/logo-DCMWenTU.png" alt="DBD I&T" class="logo">
+
+        
+        <div class="header">
+            <h1>Response Recorded</h1>
+        </div>
+        
+        <div class="message">
+            <p>Thank you for confirming your unavailability for this assignment.</p>
+            <p>We appreciate your prompt response, as it helps us ensure timely service to our clients.</p>
+        </div>
+
+        <a href="https://dbdint.up.railway.app/" class="login-button">Access Your Account</a>
+
+        <div class="contact-info">
+            <p class="contact-heading">Need Further Assistance?</p>
+            <p>Contact DBD I&T Support</p>
+            <a href="tel:7745080492" class="phone-number">774 5080492</a>
+            <p>Our team is ready to help you!</p>
+        </div>
+    </div>
+</body>
+</html>

@@ -1,0 +1,63 @@
+# Core Django
+Django
+djangorestframework
+mysqlclient
+dj-database-url 
+python-dotenv
+django-phonenumber-field[phonenumbers]
+django-countries
+django-crispy-forms
+crispy-bootstrap5
+# Authentification & Sécurité
+djangorestframework-simplejwt 
+django-cors-headers 
+
+# Interface & Formulaires
+django-crispy-forms
+crispy-tailwind
+
+# Email & Calendrier
+icalendar
+
+# Gestion des Tâches
+celery
+redis
+django-celery-beat
+
+# Paiements
+stripe
+
+# Social Auth
+social-auth-app-django
+
+# Utilitaires
+Pillow
+
+# Développement
+django-debug-toolbar 
+
+# Déploiement
+gunicorn
+whitenoise 
+
+# Manipulation de Documents
+reportlab
+python-docx 
+pdf2image
+PyPDF2
+#django-q
+ 
+django-apscheduler
+icalendar
+pytz
+icalendar
+django-storages
+supabase
+
+pdfkit 
+reportlab
+python-docx 
+html2image 
+pillow
+pycom
+xhtml2pdf

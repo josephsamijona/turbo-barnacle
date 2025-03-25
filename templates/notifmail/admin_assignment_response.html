@@ -1,0 +1,257 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DBD I&T - Assignment {{ action|title }}</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: #f8f9fc;
+            color: #444;
+            line-height: 1.6;
+        }
+        
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            background-color: #ffffff;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            margin-top: 20px;
+            margin-bottom: 20px;
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #1a56db, #0f3b8d);
+            padding: 25px;
+            text-align: center;
+            color: white;
+            position: relative;
+        }
+        
+        .logo {
+            max-width: 180px;
+            margin-bottom: 15px;
+        }
+        
+        .header h2 {
+            font-weight: 600;
+            margin: 0;
+            font-size: 22px;
+            letter-spacing: 0.5px;
+        }
+        
+        .content {
+            padding: 30px;
+            background-color: white;
+        }
+        
+        .details-card {
+            background-color: #f0f7ff;
+            border-radius: 10px;
+            padding: 25px;
+            margin-bottom: 25px;
+            border-left: 5px solid #1a56db;
+        }
+        
+        .detail-row {
+            margin-bottom: 12px;
+            display: flex;
+            align-items: flex-start;
+        }
+        
+        .detail-row:last-child {
+            margin-bottom: 0;
+        }
+        
+        .detail-row strong {
+            width: 100px;
+            color: #1a56db;
+            font-weight: 600;
+            flex-shrink: 0;
+        }
+        
+        .next-steps {
+            margin-bottom: 25px;
+        }
+        
+        .next-steps h3 {
+            color: #1a56db;
+            font-size: 18px;
+            margin-bottom: 15px;
+            font-weight: 600;
+        }
+        
+        .next-steps ul {
+            list-style-type: none;
+            padding-left: 5px;
+        }
+        
+        .next-steps ul li {
+            position: relative;
+            padding-left: 25px;
+            margin-bottom: 12px;
+        }
+        
+        .next-steps ul li:before {
+            content: '✓';
+            position: absolute;
+            left: 0;
+            color: #1a56db;
+            font-weight: bold;
+        }
+        
+        .notice-box {
+            background-color: #fff5f5;
+            border-left: 5px solid #e53e3e;
+            border-radius: 10px;
+            padding: 15px 20px;
+            margin-bottom: 25px;
+        }
+        
+        .notice-box h3 {
+            color: #e53e3e;
+            margin-bottom: 10px;
+            font-size: 18px;
+            font-weight: 600;
+        }
+        
+        .notice-box p {
+            margin: 0;
+        }
+        
+        .action-button {
+            display: inline-block;
+            background: linear-gradient(135deg, #1a56db, #0f3b8d);
+            color: white;
+            padding: 12px 24px;
+            border-radius: 50px;
+            text-decoration: none;
+            font-weight: 600;
+            text-transform: uppercase;
+            font-size: 14px;
+            letter-spacing: 0.5px;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 6px rgba(26, 86, 219, 0.3);
+        }
+        
+        .action-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(26, 86, 219, 0.4);
+        }
+        
+        .footer {
+            background-color: #f0f7ff;
+            text-align: center;
+            padding: 20px;
+            font-size: 14px;
+            color: #6b7280;
+        }
+        
+        @media only screen and (max-width: 600px) {
+            .container {
+                border-radius: 0;
+                margin-top: 0;
+                margin-bottom: 0;
+            }
+            
+            .header {
+                padding: 20px 15px;
+            }
+            
+            .content {
+                padding: 20px 15px;
+            }
+            
+            .detail-row {
+                flex-direction: column;
+            }
+            
+            .detail-row strong {
+                width: 100%;
+                margin-bottom: 3px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <img src="https://dbdiandt.co/assets/logo-DCMWenTU.png" alt="DBD I&T" class="logo">
+            <h2>Assignment {{ action|title }} by Interpreter</h2>
+        </div>
+
+        <div class="content">
+            <div class="details-card">
+                <div class="detail-row">
+                    <strong>Interpreter:</strong> {{ interpreter_name }}
+                </div>
+                <div class="detail-row">
+                    <strong>Client:</strong> {{ assignment.client_name }}
+                </div>
+                <div class="detail-row">
+                    <strong>Service:</strong> {{ assignment.service_type.name }}
+                </div>
+                <div class="detail-row">
+                    <strong>Date:</strong> {{ assignment.start_time|date:"m/d/Y" }}
+                </div>
+                <div class="detail-row">
+                    <strong>Time:</strong> {{ assignment.start_time|time:"g:i A" }} - {{ assignment.end_time|time:"g:i A" }}
+                </div>
+                <div class="detail-row">
+                    <strong>Location:</strong> {{ assignment.location }}, {{ assignment.city }}, {{ assignment.state }}
+                </div>
+                <div class="detail-row">
+                    <strong>Languages:</strong> {{ assignment.source_language.name }} → {{ assignment.target_language.name }}
+                </div>
+            </div>
+
+            {% if action == 'accepted' %}
+                <div class="next-steps">
+                    <h3>Next Steps:</h3>
+                    <ul>
+                        <li>The interpreter has been automatically notified with assignment details</li>
+                        <li>Calendar invitation has been sent</li>
+                        <li>Assignment status has been updated to CONFIRMED</li>
+                    </ul>
+                </div>
+                <div style="text-align: center; margin-top: 30px;">
+                    <a href="{{ admin_url }}" class="action-button">View Assignment Details</a>
+                </div>
+            {% else %}
+                <div class="notice-box">
+                    <h3>⚠️ Urgent Action Required</h3>
+                    <p>This assignment needs to be reassigned to a new interpreter.</p>
+                </div>
+                <div class="next-steps">
+                    <h3>Next Steps:</h3>
+                    <ul>
+                        <li>Assignment status has been automatically set to CANCELLED</li>
+                        <li>Previous interpreter has been removed from the assignment</li>
+                        <li>Click below to reassign this assignment to a new interpreter</li>
+                    </ul>
+                </div>
+                <div style="text-align: center; margin-top: 30px;">
+                    <a href="{{ admin_url }}" class="action-button">Reassign Assignment</a>
+                </div>
+            {% endif %}
+        </div>
+
+        <div class="footer">
+            <p>This is an automated message from DBD I&T Assignment System.<br>
+            No reply is needed.</p>
+        </div>
+    </div>
+</body>
+</html>

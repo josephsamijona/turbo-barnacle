@@ -1,0 +1,197 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title> DBD I&T - Registration</title>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <link rel="stylesheet" href="{% static 'css/register1.css' %}">
+    <style>
+        /* Styles spécifiques pour le logo */
+        .logo-container {
+            text-align: center;
+            margin-bottom: 2.5rem;
+            padding: 1.5rem;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 12px;
+            backdrop-filter: blur(8px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            transition: all 0.3s ease;
+            animation: logoFadeIn 0.6s ease-out forwards;
+            max-width: 300px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+    
+        .logo-container:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+        }
+    
+        .logo-container img {
+            height: 60px;
+            width: auto;
+            object-fit: contain;
+            filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.2));
+        }
+    
+        @keyframes logoFadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+    
+        /* Responsive pour le logo */
+        @media (max-width: 640px) {
+            .logo-container {
+                margin-bottom: 2rem;
+                padding: 1rem;
+                max-width: 250px;
+            }
+            
+            .logo-container img {
+                height: 50px;
+            }
+        }
+    
+        @media (max-width: 480px) {
+            .logo-container {
+                margin-bottom: 1.5rem;
+                padding: 0.75rem;
+                max-width: 200px;
+            }
+            
+            .logo-container img {
+                height: 40px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="progress-tracker">
+            <div class="step-container active">
+                <div class="step-number">1</div>
+                <div class="step-label">Personal Info</div>
+            </div>
+            <div class="progress-line"></div>
+            <div class="step-container">
+                <div class="step-number">2</div>
+                <div class="step-label">Company Details</div>
+            </div>
+        </div>
+
+        <div class="logo-container">
+            <img src="https://dbdiandt.co/assets/logo-DCMWenTU.png" alt=" DBD I&T">
+        </div>
+
+        <div class="form-card">
+            <form method="post" action="{% url 'dbdint:client_register' %}" novalidate>
+                {% csrf_token %}
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label class="form-label">Username</label>
+                        <div class="input-container">
+                            <i data-lucide="user" class="input-icon"></i>
+                            <input type="text" name="username" class="form-control" required>
+                            <span class="validation-message"></span>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Email</label>
+                        <div class="input-container">
+                            <i data-lucide="mail" class="input-icon"></i>
+                            <input type="email" name="email" class="form-control" required>
+                            <span class="validation-message"></span>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">First Name</label>
+                        <div class="input-container">
+                            <i data-lucide="user" class="input-icon"></i>
+                            <input type="text" name="first_name" class="form-control" required>
+                            <span class="validation-message"></span>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Last Name</label>
+                        <div class="input-container">
+                            <i data-lucide="user" class="input-icon"></i>
+                            <input type="text" name="last_name" class="form-control" required>
+                            <span class="validation-message"></span>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Phone Number</label>
+                        <div class="input-container">
+                            <i data-lucide="phone" class="input-icon"></i>
+                            <input type="tel" name="phone" class="form-control" required>
+                            <span class="validation-message"></span>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Password</label>
+                        <div class="input-container">
+                            <i data-lucide="lock" class="input-icon"></i>
+                            <input type="password" name="password1" class="form-control" required id="password">
+                            <i data-lucide="eye" class="password-toggle" id="togglePassword"></i>
+                            <span class="validation-message"></span>
+                        </div>
+                        <div class="password-strength">
+                            <div class="password-strength-bar"></div>
+                        </div>
+                        <div class="password-requirements">
+                            <div class="requirement" data-requirement="length">
+                                <i data-lucide="circle"></i>
+                                At least 8 characters
+                            </div>
+                            <div class="requirement" data-requirement="number">
+                                <i data-lucide="circle"></i>
+                                Contains a number
+                            </div>
+                            <div class="requirement" data-requirement="special">
+                                <i data-lucide="circle"></i>
+                                Contains a special character
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Confirm Password</label>
+                        <div class="input-container">
+                            <i data-lucide="lock" class="input-icon"></i>
+                            <input type="password" name="password2" class="form-control" required>
+                            <span class="validation-message"></span>
+                        </div>
+                    </div>
+                </div>
+
+                <button type="submit" class="btn-submit">
+                    Continue to Step 2
+                    <i data-lucide="arrow-right"></i>
+                </button>
+
+                <div class="sign-in-link">
+                    Already have an account? <a href="{% url 'dbdint:login' %}">Sign in</a>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script src="{% static 'js/register1.js' %}"></script>
+</body>
+</html>

@@ -1,0 +1,148 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Registration Success - DBD I&T</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{% static 'css/clientregister.css' %}">
+    <link rel="icon" type="image/x-icon" href="{% static 'images/favicon.ico' %}">
+</head>
+<body>
+    <div class="main-container">
+        <header class="auth-header">
+            <img src="https://dbdiandt.co/assets/logo-DCMWenTU.png" alt="DBD I&T Logo" class="logo">
+        </header>
+
+        <div class="auth-container success-container">
+            <div class="success-content">
+                <div class="success-icon">
+                    <svg width="64" height="64" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <circle cx="12" cy="12" r="10" stroke="#00C853" stroke-width="2"/>
+                        <path d="M8 12L11 15L16 9" stroke="#00C853" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                </div>
+
+                <h1 class="success-title">Registration Complete!</h1>
+                <p class="success-message">Welcome to DBD I&T! Your account has been successfully created.</p>
+
+                <div class="next-steps">
+                    <h2 class="next-steps-title">Next Steps</h2>
+                    <div class="steps-list">
+                        <div class="step-item">
+                            <div class="step-number">1</div>
+                            <div class="step-text">Complete your profile settings</div>
+                        </div>
+                        <div class="step-item">
+                            <div class="step-number">2</div>
+                            <div class="step-text">Explore our services</div>
+                        </div>
+                        <div class="step-item">
+                            <div class="step-number">3</div>
+                            <div class="step-text">Start your first project</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="action-buttons">
+                    <a href="{% url 'dbdint:client_dashboard' %}" class="btn btn-primary">Go to Dashboard</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <style>
+        .success-container {
+            text-align: center;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .success-icon {
+            margin-bottom: 2rem;
+        }
+
+        .success-title {
+            color: var(--white);
+            font-size: 2rem;
+            margin-bottom: 1rem;
+        }
+
+        .success-message {
+            color: rgba(255, 255, 255, 0.8);
+            font-size: 1.1rem;
+            margin-bottom: 3rem;
+        }
+
+        .next-steps {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 16px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .next-steps-title {
+            font-size: 1.25rem;
+            color: var(--white);
+            margin-bottom: 1.5rem;
+        }
+
+        .steps-list {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .step-item {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            text-align: left;
+        }
+
+        .step-number {
+            background: rgba(0, 200, 83, 0.2);
+            color: #00C853;
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            flex-shrink: 0;
+        }
+
+        .step-text {
+            color: rgba(255, 255, 255, 0.9);
+        }
+
+        .action-buttons {
+            margin-top: 2rem;
+        }
+
+        .action-buttons .btn {
+            min-width: 200px;
+        }
+
+        @media (max-width: 768px) {
+            .success-container {
+                padding: 1.5rem;
+            }
+
+            .next-steps {
+                padding: 1.5rem;
+            }
+
+            .success-title {
+                font-size: 1.5rem;
+            }
+
+            .success-message {
+                font-size: 1rem;
+            }
+        }
+    </style>
+</body>
+</html>

@@ -1,0 +1,358 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - DBD I&T</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<style>
+    :root {
+        --primary-blue: #003b7a;    /* Bleu foncé (de l'image) */
+        --secondary-blue: #004fa3;  /* Bleu moyen (de l'image) */
+        --third-blue: #78b0e6;      /* Bleu clair (de l'image) */
+        --accent-green: #4c98af;    /* Vert  DBD I&T */
+        --light-gray: #707070;      /* Gris */
+        --error-red: #FF4B4B;       /* Rouge erreur */
+    }
+
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+    }
+
+    body {
+        font-family: 'Inter', sans-serif;
+        min-height: 100vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: linear-gradient(135deg, var(--primary-blue) 0%, var(--secondary-blue) 60%, var(--third-blue) 100%);
+        padding: 1rem;
+    }
+
+    /* Animation du fond */
+    .bg-animation {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        z-index: -1;
+        overflow: hidden;
+    }
+
+    .bg-animation::before {
+        content: '';
+        position: absolute;
+        width: 200%;
+        height: 200%;
+        background: radial-gradient(circle, rgba(120, 176, 230, 0.1) 0%, transparent 50%);
+        animation: rotate 30s linear infinite;
+    }
+
+    @keyframes rotate {
+        from { transform: rotate(0deg) translate(-50%, -50%); }
+        to { transform: rotate(360deg) translate(-50%, -50%); }
+    }
+
+    .login-container {
+        width: 100%;
+        max-width: 420px;
+        background: rgba(27, 30, 39, 0.8);
+        backdrop-filter: blur(10px);
+        border-radius: 24px;
+        padding: 2.5rem 2rem;
+        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+        border: 1px solid rgba(70, 130, 180, 0.2);
+        animation: slideUp 0.5s ease-out;
+    }
+
+    @keyframes slideUp {
+        from {
+            opacity: 0;
+            transform: translateY(20px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    .login-header {
+        text-align: center;
+        margin-bottom: 2rem;
+    }
+
+    .login-logo {
+        width: 200px;  /* Ajusté pour le logo  DBD I&T */
+        height: auto;
+        margin: 0 auto 1.5rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: transparent; /* Supprime le fond vert */
+        border-radius: 0;
+    }
+
+    .login-logo img {
+        width: 100%;
+        height: auto;
+        object-fit: contain;
+    }
+    .login-title {
+        color: white;
+        font-size: 1.5rem;
+        font-weight: 600;
+        margin-bottom: 0.5rem;
+    }
+
+    .login-subtitle {
+        color: rgba(255, 255, 255, 0.6);
+        font-size: 0.875rem;
+    }
+
+    .form-group {
+        margin-bottom: 1.5rem;
+        position: relative;
+    }
+
+    .form-group label {
+        display: block;
+        color: rgba(255, 255, 255, 0.8);
+        margin-bottom: 0.5rem;
+        font-size: 0.875rem;
+    }
+
+    .input-group {
+        position: relative;
+        transition: transform 0.3s ease;
+    }
+
+    .input-icon {
+        position: absolute;
+        left: 1rem;
+        top: 50%;
+        transform: translateY(-50%);
+        color: rgba(255, 255, 255, 0.4);
+        transition: color 0.3s ease;
+    }
+
+    .form-control {
+        width: 100%;
+        padding: 0.875rem 1rem 0.875rem 2.5rem;
+        background: rgba(255, 255, 255, 0.05);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 12px;
+        color: white;
+        font-size: 1rem;
+        transition: all 0.3s ease;
+    }
+
+    .form-control:focus {
+        outline: none;
+        border-color: var(--accent-green);
+        background: rgba(255, 255, 255, 0.1);
+    }
+
+    .form-control:focus + .input-icon {
+        color: var(--accent-green);
+    }
+
+    .form-control::placeholder {
+        color: rgba(255, 255, 255, 0.3);
+    }
+
+    .error-message {
+        color: var(--error-red);
+        font-size: 0.875rem;
+        margin-top: 0.5rem;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        animation: shake 0.3s ease-in-out;
+    }
+
+    @keyframes shake {
+        0%, 100% { transform: translateX(0); }
+        25% { transform: translateX(-5px); }
+        75% { transform: translateX(5px); }
+    }
+
+    .login-button {
+        width: 100%;
+        padding: 1rem;
+        background: var(--accent-green);
+        color: white;
+        border: none;
+        border-radius: 12px;
+        font-size: 1rem;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .login-button::before {
+        content: '';
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        width: 100%;
+        height: 100%;
+        background: rgba(255, 255, 255, 0.1);
+        transform: translate(-50%, -50%) scale(0);
+        border-radius: 50%;
+        transition: transform 0.5s ease;
+    }
+
+    .login-button:hover::before {
+        transform: translate(-50%, -50%) scale(2);
+    }
+
+    .login-button:hover {
+        background: #4c98af;
+        transform: translateY(-2px);
+    }
+
+    .footer-links {
+        display: flex;
+        justify-content: space-between;
+        margin-top: 1.5rem;
+        font-size: 0.875rem;
+    }
+
+    .footer-link {
+        color: rgba(255, 255, 255, 0.6);
+        text-decoration: none;
+        transition: color 0.3s ease;
+    }
+
+    .footer-link:hover {
+        color: var(--accent-green);
+    }
+
+    /* Messages */
+    .messages {
+        position: fixed;
+        top: 1rem;
+        left: 50%;
+        transform: translateX(-50%);
+        z-index: 1000;
+        min-width: 300px;
+        max-width: 90%;
+    }
+
+    .message {
+        background: rgba(255, 75, 75, 0.9);
+        color: white;
+        padding: 1rem;
+        border-radius: 12px;
+        margin-bottom: 0.5rem;
+        backdrop-filter: blur(10px);
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        animation: slideDown 0.3s ease-out;
+    }
+
+    @keyframes slideDown {
+        from { transform: translateY(-20px); opacity: 0; }
+        to { transform: translateY(0); opacity: 1; }
+    }
+</style>
+</head>
+<body>
+    <!-- Background Animation -->
+    <div class="bg-animation"></div>
+
+    <!-- Messages -->
+    {% if messages %}
+    <div class="messages">
+        {% for message in messages %}
+        <div class="message">
+            <i class="fas fa-exclamation-circle"></i>
+            {{ message }}
+        </div>
+        {% endfor %}
+    </div>
+    {% endif %}
+
+    <!-- Login Container -->
+    <div class="login-container">
+        <div class="login-header">
+            <div class="login-logo">
+                <img src="https://dbdiandt.co/assets/logo-DCMWenTU.png" alt="DBD I&T">
+            </div>
+            <h1 class="login-title">Welcome to DBD I&T</h1>
+            <p class="login-subtitle">Sign in to continue to your account</p>
+        </div>
+
+        <form method="post" novalidate>
+            {% csrf_token %}
+
+            <div class="form-group">
+                <label for="{{ form.username.id_for_label }}">Email Address</label>
+                <div class="input-group">
+                    {{ form.username }}
+                    <i class="fas fa-envelope input-icon"></i>
+                </div>
+                {% if form.username.errors %}
+                <div class="error-message">
+                    <i class="fas fa-exclamation-circle"></i>
+                    {{ form.username.errors|join:", " }}
+                </div>
+                {% endif %}
+            </div>
+
+            <div class="form-group">
+                <label for="{{ form.password.id_for_label }}">Password</label>
+                <div class="input-group">
+                    {{ form.password }}
+                    <i class="fas fa-lock input-icon"></i>
+                </div>
+                {% if form.password.errors %}
+                <div class="error-message">
+                    <i class="fas fa-exclamation-circle"></i>
+                    {{ form.password.errors|join:", " }}
+                </div>
+                {% endif %}
+            </div>
+
+            <button type="submit" class="login-button">Sign In</button>
+
+            <div class="footer-links">
+                <a href="{% url 'dbdint:password_reset' %}" class="footer-link">Forgot Password?</a>
+                <a href="{% url 'dbdint:choose_registration' %}" class="footer-link">Create Account</a>
+            </div>
+        </form>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Auto-hide messages after 5 seconds
+            const messages = document.querySelectorAll('.message');
+            messages.forEach(message => {
+                setTimeout(() => {
+                    message.style.opacity = '0';
+                    setTimeout(() => message.remove(), 300);
+                }, 5000);
+            });
+
+            // Focus animation for inputs
+            const inputs = document.querySelectorAll('.form-control');
+            inputs.forEach(input => {
+                input.addEventListener('focus', () => {
+                    input.parentElement.style.transform = 'scale(1.02)';
+                });
+                input.addEventListener('blur', () => {
+                    input.parentElement.style.transform = 'scale(1)';
+                });
+            });
+        });
+    </script>
+</body>
+</html>

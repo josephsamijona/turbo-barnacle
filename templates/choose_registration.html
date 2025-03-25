@@ -1,0 +1,401 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Choose Account Type - DBD I&T</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="https://unpkg.com/aos@next/dist/aos.css" />
+<style>
+    :root {
+        --primary-blue: #003b7a;    /* Bleu foncé (de l'image) */
+        --secondary-blue: #004fa3;  /* Bleu moyen (de l'image) */
+        --third-blue: #78b0e6;      /* Bleu clair (de l'image) */
+        --light-gray: #707070;      /* Gris */
+        --error-red: #FF4B4B;       /* Rouge erreur */
+    }
+
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+    }
+
+    body {
+        font-family: 'Inter', sans-serif;
+        min-height: 100vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: linear-gradient(135deg, var(--primary-blue) 0%, var(--secondary-blue) 60%, var(--third-blue) 100%);
+        padding: 2rem;
+        color: white;
+    }
+
+    .bg-animation {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        z-index: -1;
+        overflow: hidden;
+    }
+
+    .bg-animation::before {
+        content: '';
+        position: absolute;
+        width: 200%;
+        height: 200%;
+        background: radial-gradient(circle, rgba(120, 176, 230, 0.1) 0%, transparent 50%);
+        animation: rotate 30s linear infinite;
+    }
+
+    @keyframes rotate {
+        from { transform: rotate(0deg) translate(-50%, -50%); }
+        to { transform: rotate(360deg) translate(-50%, -50%); }
+    }
+
+    .container {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 2rem;
+        text-align: center;
+    }
+
+    /* Logo styles */
+    .logo-container {
+        margin-bottom: 2rem;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+
+    .logo {
+        width: 220px;
+        height: auto;
+        object-fit: contain;
+        filter: drop-shadow(0 4px 6px rgba(0, 0, 0, 0.1));
+    }
+
+    /* Header styles */
+    .header {
+        margin-bottom: 3rem;
+    }
+
+    .header h1 {
+        font-size: 2.8rem;
+        margin-bottom: 1rem;
+        background: linear-gradient(to right, #fff, var(--third-blue));
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        text-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    .header-tagline {
+        font-size: 1.4rem;
+        color: var(--third-blue);
+        margin-bottom: 0.5rem;
+    }
+
+    .header-subtitle {
+        font-size: 1.1rem;
+        color: rgba(255, 255, 255, 0.9);
+        margin-top: 0.5rem;
+    }
+
+    /* Grid layout */
+    .options-grid {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 2rem;
+        margin: 2rem auto;
+        max-width: 1000px;
+    }
+
+    /* Card styles */
+    .option-card {
+        min-height: 450px;
+        display: flex;
+        flex-direction: column;
+        padding: 2rem;
+        background: rgba(0, 59, 122, 0.8);
+        backdrop-filter: blur(10px);
+        border-radius: 16px;
+        text-align: left;
+        border: 1px solid rgba(120, 176, 230, 0.2);
+        box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+        position: relative;
+    }
+
+    .option-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 12px 28px rgba(0, 0, 0, 0.3);
+    }
+
+    .card-badge {
+        position: absolute;
+        top: -15px;
+        left: 50%;
+        transform: translateX(-50%);
+        background: var(--secondary-blue);
+        padding: 0.5rem 1.2rem;
+        border-radius: 20px;
+        font-weight: 500;
+        box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+    }
+
+    .icon-circle {
+        width: 60px;
+        height: 60px;
+        background: rgba(120, 176, 230, 0.1);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-bottom: 1.5rem;
+        font-size: 1.5rem;
+        color: var(--third-blue);
+        transition: transform 0.3s ease;
+    }
+
+    .card-title {
+        font-size: 1.6rem;
+        margin-bottom: 1rem;
+        color: white;
+    }
+
+    .card-description {
+        font-size: 1rem;
+        color: rgba(255, 255, 255, 0.8);
+        line-height: 1.5;
+        margin-bottom: 1.5rem;
+    }
+
+    /* Feature list */
+    .feature-list {
+        flex-grow: 1;
+        margin: 1.5rem 0;
+        list-style: none;
+    }
+
+    .feature-list li {
+        display: flex;
+        align-items: center;
+        margin-bottom: 1rem;
+        font-size: 1rem;
+        color: rgba(255, 255, 255, 0.9);
+    }
+
+    .feature-list i {
+        width: 28px;
+        height: 28px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: rgba(120, 176, 230, 0.1);
+        border-radius: 50%;
+        margin-right: 0.8rem;
+        font-size: 0.9rem;
+        color: var(--third-blue);
+    }
+
+    /* Button container */
+    .button-container {
+        margin-top: auto;
+        padding-top: 1.5rem;
+    }
+
+    /* Button styles */
+    .cta-button {
+        width: 100%;
+        padding: 1rem 1.5rem;
+        background: var(--secondary-blue);
+        color: white;
+        border: none;
+        border-radius: 10px;
+        font-size: 1rem;
+        font-weight: 600;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.6rem;
+        transition: all 0.3s ease;
+    }
+
+    .cta-button:hover {
+        background: var(--third-blue);
+        transform: translateY(-2px);
+    }
+
+    .cta-button i {
+        transition: transform 0.3s ease;
+    }
+
+    .cta-button:hover i {
+        transform: translateX(5px);
+    }
+
+    /* Footer */
+    .footer {
+        margin-top: 3rem;
+        color: rgba(255, 255, 255, 0.7);
+    }
+
+    .footer-text {
+        font-size: 1rem;
+    }
+
+    .footer-link {
+        color: var(--third-blue);
+        text-decoration: none;
+        transition: color 0.3s ease;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    .footer-link:hover {
+        color: white;
+    }
+
+    /* Responsive Design */
+    @media (max-width: 1024px) {
+        .options-grid {
+            gap: 1.5rem;
+            padding: 0 1rem;
+        }
+
+        .header h1 {
+            font-size: 2.5rem;
+        }
+    }
+
+    @media (max-width: 768px) {
+        .container {
+            padding: 1rem;
+        }
+        
+        .options-grid {
+            grid-template-columns: 1fr;
+        }
+        
+        .header h1 {
+            font-size: 2.2rem;
+        }
+        
+        .header-tagline {
+            font-size: 1.2rem;
+        }
+        
+        .option-card {
+            min-height: auto;
+        }
+        
+        .logo {
+            width: 180px;
+        }
+    }
+
+    @media (max-width: 480px) {
+        .header h1 {
+            font-size: 1.8rem;
+        }
+        
+        .header-tagline {
+            font-size: 1rem;
+        }
+        
+        .card-title {
+            font-size: 1.4rem;
+        }
+    }
+    </style>
+</head>
+<body>
+    <div class="bg-animation"></div>
+
+    <div class="container">
+        <!-- Logo -->
+        <div class="logo-container">
+            <img src="https://dbdiandt.co/assets/logo-DCMWenTU.png" alt="DBD I&T Logo" class="logo">
+        </div>
+
+        <header class="header">
+            <h1>WE ARE YOUR VOICE!</h1>
+            <p class="header-tagline">Breaking language barriers worldwide</p>
+            <div class="header-subtitle">Choose your path to international success</div>
+        </header>
+
+        <div class="options-grid">
+            <!-- Client Card -->
+            <div class="option-card" data-aos="fade-up">
+                <div class="card-badge">Business Solution</div>
+                <div class="icon-circle">
+                    <i class="fas fa-globe-americas"></i>
+                </div>
+                <h2 class="card-title">Empower Your Business</h2>
+                <p class="card-description">Connect with global opportunities through our professional translation services.</p>
+                <ul class="feature-list">
+                    <li><i class="fas fa-clock"></i> 24/7 on-demand service</li>
+                    <li><i class="fas fa-chart-line"></i> Real-time analytics</li>
+                    <li><i class="fas fa-shield-alt"></i> Secure & confidential</li>
+                </ul>
+                <div class="button-container">
+                    <a href="{% url 'dbdint:client_register' %}" class="cta-button">
+                        Get Started <i class="fas fa-arrow-right"></i>
+                    </a>
+                </div>
+            </div>
+
+            <!-- Interpreter Card -->
+            <div class="option-card" data-aos="fade-up" data-aos-delay="100">
+                <div class="card-badge">Career Opportunity</div>
+                <div class="icon-circle">
+                    <i class="fas fa-comments"></i>
+                </div>
+                <h2 class="card-title">Join Our Network</h2>
+                <p class="card-description">Transform your linguistic expertise into a rewarding global career.</p>
+                <ul class="feature-list">
+                    <li><i class="fas fa-wallet"></i> Competitive compensation</li>
+                    <li><i class="fas fa-calendar-alt"></i> Flexible schedule</li>
+                    <li><i class="fas fa-graduation-cap"></i> Professional growth</li>
+                </ul>
+                <div class="button-container">
+                    <a href="{% url 'dbdint:interpreter_registration_step1' %}" class="cta-button">
+                        Apply Now <i class="fas fa-arrow-right"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <div class="footer">
+            <p class="footer-text">Already part of our community? <a href="{% url 'dbdint:login' %}" class="footer-link">Sign in <i class="fas fa-sign-in-alt"></i></a></p>
+        </div>
+    </div>
+
+    <script src="https://unpkg.com/aos@next/dist/aos.js"></script>
+    <script>
+        // Initialize AOS (Animate On Scroll)
+        AOS.init({
+            duration: 700,
+            offset: 80,
+            once: true
+        });
+
+        // Card hover animations
+        document.querySelectorAll('.option-card').forEach(card => {
+            card.addEventListener('mouseenter', () => {
+                card.querySelector('.icon-circle').style.transform = 'scale(1.1)';
+            });
+            card.addEventListener('mouseleave', () => {
+                card.querySelector('.icon-circle').style.transform = 'scale(1)';
+            });
+        });
+    </script>
+</body>
+</html>
