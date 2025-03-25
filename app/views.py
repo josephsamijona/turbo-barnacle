@@ -3103,8 +3103,8 @@ def daily_missions_api(request, date_str):
             'end_time': assignment.end_time.isoformat(),
             'client_info': {
                 'name': assignment.client_name,
-                'phone': assignment.client.phone if assignment.client else assignment.client_phone,
-                'email': assignment.client.email if assignment.client else assignment.client_email
+                'phone': assignment.client_phone,
+                'email': assignment.client_email
             },
             'location': {
                 'address': assignment.location,
