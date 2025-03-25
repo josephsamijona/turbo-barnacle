@@ -2949,7 +2949,7 @@ def calendar_view(request):
             'end_time': assignment.end_time,
             'status': assignment.status,
             'client_info': {
-                'name': assignment.get_client_display(),
+                'name': assignment.client_name,
                 'phone': assignment.client_phone,  # Remplacer par client_phone directement
                 'email': assignment.client_email,  # Remplacer par client_email directement
             },
@@ -2980,9 +2980,9 @@ def calendar_view(request):
             'end_time': assignment.end_time,
             'status': assignment.status,
             'client_info': {
-                'name': assignment.get_client_display(),
-                'phone': assignment.client.phone if assignment.client else assignment.client_phone,
-                'email': assignment.client.email if assignment.client else assignment.client_email
+                'name': assignment.client_name,
+                'phone': assignment.client_phone,
+                'email': assignment.client_email
             },
             'location': {
                 'address': assignment.location,
@@ -3102,7 +3102,7 @@ def daily_missions_api(request, date_str):
             'start_time': assignment.start_time.isoformat(),
             'end_time': assignment.end_time.isoformat(),
             'client_info': {
-                'name': assignment.get_client_display(),
+                'name': assignment.client_name,
                 'phone': assignment.client.phone if assignment.client else assignment.client_phone,
                 'email': assignment.client.email if assignment.client else assignment.client_email
             },

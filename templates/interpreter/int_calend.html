@@ -81,16 +81,7 @@
                             <div class="mission-status {{ mission.status|lower }}">
                                 {{ mission.get_status_display }}
                             </div>
-                            {% if mission.can_be_started %}
-                            <button class="btn btn-success btn-sm start-mission" data-mission-id="{{ mission.id }}">
-                                Start Mission
-                            </button>
-                            {% endif %}
-                            {% if mission.can_be_cancelled %}
-                            <button class="btn btn-danger btn-sm cancel-mission" data-mission-id="{{ mission.id }}">
-                                Cancel
-                            </button>
-                            {% endif %}
+
                         </div>
                     </div>
                 </div>
